@@ -22,7 +22,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # nexus
-ARG NEXUS_VERSION=3.2.1-01
+ARG NEXUS_VERSION=3.3.1-01
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
 
 # configure java runtime
