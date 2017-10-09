@@ -24,14 +24,14 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 # configure java runtime
 ENV JAVA_HOME=/opt/java \
   JAVA_VERSION_MAJOR=8 \
-  JAVA_VERSION_MINOR=131 \
-  JAVA_VERSION_BUILD=11 \
-  JAVA_VERSION_URL_HASH=d54c1d3a095b4ff2b6607d096fa80163 \
-  JAVA_VERSION_SHA256=a80634d17896fe26e432f6c2b589ef6485685b2e717c82cd36f8f747d40ec84b
+  JAVA_VERSION_MINOR=144 \
+  JAVA_VERSION_BUILD=01 \
+  JAVA_VERSION_URL_HASH=090f390dda5b47b9b721c7dfaa008135 \
+  JAVA_VERSION_SHA256=8ba6f1c692518beb0c727c6e1fb8c30a5dfcc38f8ef9f4f7c7c114c01c747ebc
 
 ENV JAVA_DOWNLOAD_URL=http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_VERSION_URL_HASH}/server-jre-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz
 
-# install oracle jdk
+# install oracle jre
 RUN mkdir -p /opt \
   && curl --fail --silent --location --retry 3 \
   --header "Cookie: oraclelicense=accept-securebackup-cookie; " \
@@ -40,8 +40,11 @@ RUN mkdir -p /opt \
   | tar -x -C /opt \
   &&  ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JAVA_HOME}
 
+# check installation of the oracle jre
+RUN ${JAVA_HOME}/bin/java -version
+
 # nexus
-ARG NEXUS_VERSION=3.3.2-02
+ARG NEXUS_VERSION=3.6.0-02
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
 ARG NEXUS_SHA1_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz.sha1
 
@@ -84,4 +87,10 @@ ENV JAVA_MAX_MEM=1200m \
 COPY ./conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 USER root
-CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+COPY ./docker-entrypoint.sh /usr/local/bin/
+RUN ln -s /usr/local/bin/docker-entrypoint.sh / # backwards compatibility
+RUN ls -al /
+RUN pwd
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
