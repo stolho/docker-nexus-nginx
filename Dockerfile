@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM stolho/oracle-java:server-jre-8u144
 
 MAINTAINER Stanislav Khotinok <stanislav.khotinok@gmail.com>
 
@@ -6,10 +6,8 @@ RUN apt-get update && apt-get install -y \
   apache2-utils \
   bash \
   ca-certificates \
-  curl \
   nginx \
   supervisor \
-  tar \
 && apt-get clean all && rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/nginx/sites-enabled/default
@@ -21,30 +19,8 @@ RUN mkdir -p /var/log/supervisor
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
-# configure java runtime
-ENV JAVA_HOME=/opt/java \
-  JAVA_VERSION_MAJOR=8 \
-  JAVA_VERSION_MINOR=144 \
-  JAVA_VERSION_BUILD=01 \
-  JAVA_VERSION_URL_HASH=090f390dda5b47b9b721c7dfaa008135 \
-  JAVA_VERSION_SHA256=8ba6f1c692518beb0c727c6e1fb8c30a5dfcc38f8ef9f4f7c7c114c01c747ebc
-
-ENV JAVA_DOWNLOAD_URL=http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_VERSION_URL_HASH}/server-jre-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz
-
-# install oracle jre
-RUN mkdir -p /opt \
-  && curl --fail --silent --location --retry 3 \
-  --header "Cookie: oraclelicense=accept-securebackup-cookie; " \
-  ${JAVA_DOWNLOAD_URL} \
-  | gunzip \
-  | tar -x -C /opt \
-  &&  ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JAVA_HOME}
-
-# check installation of the oracle jre
-RUN ${JAVA_HOME}/bin/java -version
-
 # nexus
-ARG NEXUS_VERSION=3.6.0-02
+ARG NEXUS_VERSION=3.6.2-01
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
 ARG NEXUS_SHA1_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz.sha1
 
