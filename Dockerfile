@@ -1,4 +1,4 @@
-FROM stolho/oracle-java:server-jre-8u162
+FROM stolho/oracle-java:server-jre-8u172
 
 MAINTAINER Stanislav Khotinok <stanislav.khotinok@gmail.com>
 
