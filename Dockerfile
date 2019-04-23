@@ -1,4 +1,4 @@
-FROM stolho/oracle-java:server-jre-8u181
+FROM stolho/oracle-java:server-jre-8u202
 
 MAINTAINER Stanislav Khotinok <stanislav.khotinok@gmail.com>
 
@@ -20,7 +20,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # nexus
-ARG NEXUS_VERSION=3.15.1-01
+ARG NEXUS_VERSION=3.15.2-01
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
 ARG NEXUS_SHA1_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz.sha1
 
